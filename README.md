@@ -1,4 +1,4 @@
-Graphical representation of A* search algorithm in 2D grid.
+Graphical representation of Monte Carlo integration method.
 List of developed heuristics: 
 - Manhattan distance;
 - Diagonal distance;
@@ -19,7 +19,10 @@ cmake;
 
 1) To auto-generate na GNU makefile step inside the build directory and run "cmake .." in the terminal; The cmake should generate a GNU makefile.
 2) After generation is complete run "make";
-3) When compilation has completed run the binary with "./game";
+3) When compilation has completed run the binary with "./batman";
 
-NOTE: the binary takes argument - "isDiagonalMovementAllowed";
-Run with "./game true" to allowed diagonal movements in the grid;
+NOTE: the binary takes argument - "number of points to evaluate". If no argument is provided - the default value of 500000 points are used.
+
+TODOs:
+- Remove the hardcoded sleep
+- Add event polling and handle ESC key for exit.
