@@ -22,7 +22,3 @@ cmake;
 3) When compilation has completed run the binary with "./batman";
 
 NOTE: the binary takes argument - "number of points to evaluate". If no argument is provided - the default value of 500000 points are used.
-
-TODOs:
-- Remove the hardcoded sleep
-- Add event polling and handle ESC key for exit.

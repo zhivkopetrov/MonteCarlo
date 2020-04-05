@@ -13,9 +13,8 @@
 //Forward declarations
 
 struct Point {
-  Point(const double inputX, const double inputY) {
-    x = inputX;
-    y = inputY;
+  Point(const double inputX, const double inputY) : x(inputX), y(inputY) {
+
   }
 
   Point() {
