@@ -17,8 +17,11 @@ libsdl2-image-dev;
 libsdl2-mixer-dev;
 cmake;
 
-1) To auto-generate na GNU makefile step inside the build directory and run "cmake .." in the terminal; The cmake should generate a GNU makefile.
+1) To auto-generate na GNU makefile step inside the build directory and run "cmake .." in the terminal; 
+The cmake should generate a GNU makefile.
 2) After generation is complete run "make";
 3) When compilation has completed run the binary with "./batman";
 
-NOTE: the binary takes argument - "number of points to evaluate". If no argument is provided - the default value of 500000 points are used.
+NOTE: the binary takes arguments:  
+- First: "number of points to evaluate". If no argument is provided - the default value of 2000000 points are used.
+- Second: "--show-texts=yes" or "--show-texts=no" - the default value is "yes"

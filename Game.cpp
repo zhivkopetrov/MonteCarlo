@@ -28,12 +28,14 @@ constexpr double HASH_3 = ( (3 * sqrt(33)) - 7) / 112;
 using Time = std::chrono::high_resolution_clock;
 
 Game::Game()
-    : _totalEvaluatedPoints(0), _pointsInOval(0), _pointsInBatman(0) {
+    : _totalEvaluatedPoints(0), _pointsInOval(0), _pointsInBatman(0),
+      _showTexts(false) {
 
 }
 
-int32_t Game::init(const uint32_t samplesCount) {
+int32_t Game::init(const GameCfg &cfg) {
   int32_t err = EXIT_SUCCESS;
+  _showTexts = cfg.showTexts;
   memset(&_inputEvent, 0, sizeof(_inputEvent));
 
   if ( EXIT_SUCCESS != initGraphics()) {
@@ -43,7 +45,7 @@ int32_t Game::init(const uint32_t samplesCount) {
   }
 
   if ( EXIT_SUCCESS == err) {
-    generatePoints(MONITOR_WIDTH, MONITOR_HEIGHT, samplesCount);
+    generatePoints(MONITOR_WIDTH, MONITOR_HEIGHT, cfg.samplesCount);
   }
 
   return err;
@@ -136,8 +138,10 @@ void Game::drawWorld(const std::vector<Point> &outSamples) {
 
   _renderer.drawTexture(&_pointsFBO.drawParams);
 
-  for (uint8_t i = 0; i < Textures::TEXTS_COUNT; ++i) {
-    _renderer.drawTexture(&_texts[i].drawParams);
+  if (_showTexts) {
+    for (uint8_t i = 0; i < Textures::TEXTS_COUNT; ++i) {
+      _renderer.drawTexture(&_texts[i].drawParams);
+    }
   }
 
   _renderer.finishFrame();
@@ -314,6 +318,10 @@ bool Game::inOval(const Point &point, const Point &origin,
 void Game::updateTexts(
     const MonteCarloArgs &args,
     const std::chrono::high_resolution_clock::time_point &start) {
+  if (!_showTexts) {
+    return;
+  }
+
   std::string content;
   content.reserve(50);
 

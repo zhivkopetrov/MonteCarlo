@@ -23,12 +23,19 @@
 struct Point;
 struct MonteCarloArgs;
 
+struct GameCfg {
+  GameCfg() : samplesCount(2000000), showTexts(true) {}
+
+  uint32_t samplesCount;
+  bool showTexts;
+};
+
 class Game {
 public:
   Game();
   virtual ~Game() = default;
 
-  int32_t init(const uint32_t samplesCount);
+  int32_t init(const GameCfg &cfg);
 
   void deinit();
 
@@ -76,6 +83,8 @@ private:
   int32_t _totalEvaluatedPoints;
   int32_t _pointsInOval;
   int32_t _pointsInBatman;
+
+  bool _showTexts;
 };
 
 #endif /* GAME_H_ */
