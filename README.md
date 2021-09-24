@@ -1,13 +1,9 @@
-Graphical representation of Monte Carlo integration method.
-List of developed heuristics: 
-- Manhattan distance;
-- Diagonal distance;
-- Euclidean distance;
+Graphical representation of Monte Carlo integration method
 
 The project uses:
 
 - Linux OS;
-- SDL2 external library for graphics;
+- SDL2 external library for graphics and keyboard/mouse inputs;
 - cmake for build tool;
 
 In order to run the project you need to have the listed libraries installed:
@@ -22,6 +18,6 @@ The cmake should generate a GNU makefile.
 2) After generation is complete run "make";
 3) When compilation has completed run the binary with "./batman";
 
-NOTE: the binary takes arguments:  
+NOTE: the binary takes arguments:
 - First: "number of points to evaluate". If no argument is provided - the default value of 2000000 points are used.
 - Second: "--show-texts=yes" or "--show-texts=no" - the default value is "yes"
