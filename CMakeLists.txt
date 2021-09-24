@@ -34,7 +34,6 @@ file(GLOB _SOURCES
         ${_BASE_DIR}/common/*.cpp
 )
                   
-#generate project binary
 add_executable(${PROJECT_NAME}
                ${_SOURCES})
                      
