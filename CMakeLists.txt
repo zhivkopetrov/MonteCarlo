@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(batman)
+project(batman_integration)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/helpers.cmake)
 set(CMAKE_MODULE_PATH 
@@ -52,4 +52,5 @@ target_link_libraries(
             ${SDL2_LIBRARY}       # -lSDL2 flag
             ${SDL2_IMAGE_LIBRARY} # -lSDL2_image flag
             ${SDL2_TTF_LIBRARY}   # -lSDL2_ttf flag
+            m                     # -libm flag
 )

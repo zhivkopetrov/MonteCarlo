@@ -19,7 +19,7 @@ struct SDL_Renderer;
 
 class Renderer {
 public:
-  Renderer();
+  Renderer() = default;
 
   //forbid the copy and move constructors
   Renderer(const Renderer &other) = delete;
@@ -28,8 +28,6 @@ public:
   //forbid the copy and move assignment operators
   Renderer& operator=(const Renderer &other) = delete;
   Renderer& operator=(Renderer &&other) = delete;
-
-  ~Renderer() = default;
 
   /** @brief used to initialise actual renderer
    *
@@ -99,16 +97,16 @@ private:
   };
 
   //The window we'll be rendering to
-  SDL_Window *_window;
+  SDL_Window *_window = nullptr;
 
   //The Hardware Accelerated Renderer
-  SDL_Renderer *_sdlRenderer;
+  SDL_Renderer *_sdlRenderer = nullptr;
 
   //container holding all the graphical textures
   TextureContainer _textureContainer;
 
   //counter for Textures in each individual frame
-  int32_t _currWidgetCounter;
+  int32_t _currWidgetCounter = 0;
 
   DrawParams _widgets[MAX_WIDGET_COUNT];
 };

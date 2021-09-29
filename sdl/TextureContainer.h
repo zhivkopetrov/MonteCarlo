@@ -23,8 +23,6 @@ class TextureContainer {
 public:
   TextureContainer();
 
-  virtual ~TextureContainer() = default;
-
   int32_t init(SDL_Renderer *renderer);
 
   void deinit();

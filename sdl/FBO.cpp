@@ -1,7 +1,5 @@
-#include "FBO.h"
-
 //Corresponding header
-#include "Text.h"
+#include "FBO.h"
 
 //C system headers
 
@@ -12,16 +10,9 @@
 //Own components headers
 #include "sdl/Renderer.h"
 
-FBO::FBO()
-    : _renderer(nullptr) {
-
-}
-
 int32_t FBO::init(Renderer *renderer, const uint8_t rsrcId,
                   const SDL_Point startPoint, const int32_t FBOWidth,
                   const int32_t FBOHeight) {
-  int32_t err = EXIT_SUCCESS;
-
   _renderer = renderer;
   drawParams.rsrcId = rsrcId;
   drawParams.frame = 0;
@@ -32,10 +23,10 @@ int32_t FBO::init(Renderer *renderer, const uint8_t rsrcId,
     fprintf(stderr, "Error, _textureContainer->createEmptyTexture() "
         "failed\n");
 
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void FBO::unlockFBO() {

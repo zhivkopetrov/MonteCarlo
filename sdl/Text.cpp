@@ -10,11 +10,6 @@
 //Own components headers
 #include "sdl/TextureContainer.h"
 
-Text::Text()
-    : _textureContainer(nullptr), _fontSize(0), _width(0), _height(0) {
-
-}
-
 int32_t Text::init(TextureContainer *textureContainer, const uint8_t rsrcId,
                    const SDL_Point startPoint, const char *startText,
                    const int32_t fontSize) {

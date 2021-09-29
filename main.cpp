@@ -11,10 +11,10 @@
 #include "sdl/SDLLoader.h"
 
 //Own components headers
-#include "Game.h"
+#include "Application.h"
 
-static GameCfg parseInput(int32_t argc, char *args[]) {
-  GameCfg cfg;
+static ApplicationCfg parseInput(int32_t argc, char *args[]) {
+  ApplicationCfg cfg;
   if (1 == argc) {
     return cfg;
   }
@@ -35,33 +35,39 @@ static GameCfg parseInput(int32_t argc, char *args[]) {
   return cfg;
 }
 
-int32_t main(int32_t argc, char *args[]) {
-  int32_t err = EXIT_SUCCESS;
+static int32_t runApplication(const ApplicationCfg& cfg) {
+  Application app;
 
+  if (EXIT_SUCCESS != app.init(cfg)) {
+    fprintf(stderr, "app.init() failed\n");
+
+    return EXIT_FAILURE;
+  }
+
+  app.start();
+
+  app.deinit();
+
+  return EXIT_SUCCESS;
+}
+
+int32_t main(int32_t argc, char *args[]) {
   if (EXIT_SUCCESS != SDLLoader::init()) {
     fprintf(stderr, "Error in SDLLoader::init() -> Terminating ...\n");
 
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  const GameCfg gameCfg = parseInput(argc, args);
-  Game game;
+  const auto appCfg = parseInput(argc, args);
+  if (EXIT_SUCCESS != runApplication(appCfg)) {
+    fprintf(stderr, "runApplication() failed\n");
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != game.init(gameCfg)) {
-      fprintf(stderr, "game.init() failed\n");
-
-      err = EXIT_FAILURE;
-    } else {
-      game.start();
-    }
+    return EXIT_FAILURE;
   }
-
-  game.deinit();
 
   //close SDL libraries
   SDLLoader::deinit();
 
-  return err;
+  return EXIT_SUCCESS;
 }
 

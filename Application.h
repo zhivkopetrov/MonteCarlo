@@ -1,5 +1,5 @@
-#ifndef GAME_H_
-#define GAME_H_
+#ifndef APPLICATION_H_
+#define APPLICATION_H_
 
 //C system headers
 
@@ -9,7 +9,7 @@
 #include <chrono>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
+#include <SDL_events.h>
 
 //Own components headers
 #include "common/CommonDefines.h"
@@ -23,19 +23,14 @@
 struct Point;
 struct MonteCarloArgs;
 
-struct GameCfg {
-  GameCfg() : samplesCount(2000000), showTexts(true) {}
-
-  uint32_t samplesCount;
-  bool showTexts;
+struct ApplicationCfg {
+  uint32_t samplesCount = 2000000;
+  bool showTexts = true;
 };
 
-class Game {
+class Application {
 public:
-  Game();
-  virtual ~Game() = default;
-
-  int32_t init(const GameCfg &cfg);
+  int32_t init(const ApplicationCfg &cfg);
 
   void deinit();
 
@@ -80,12 +75,12 @@ private:
 
   std::vector<Point> _pointsToEvaluate;
 
-  int32_t _totalEvaluatedPoints;
-  int32_t _pointsInOval;
-  int32_t _pointsInBatman;
+  int32_t _totalEvaluatedPoints = 0;
+  int32_t _pointsInOval = 0;
+  int32_t _pointsInBatman = 0;
 
-  bool _showTexts;
+  bool _showTexts = false;
 };
 
-#endif /* GAME_H_ */
+#endif /* APPLICATION_H_ */
 

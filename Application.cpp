@@ -1,11 +1,13 @@
 //Corresponding header
-#include "Game.h"
+#include "Application.h"
 
 //C system headers
 
 //C++ system headers
 #include <cstdlib>
 #include <cstdio>
+#include <sstream>
+#include <iomanip>
 #include <random>
 #include <thread>
 
@@ -26,35 +28,26 @@ constexpr double HASH_3 = ( (3 * sqrt(33)) - 7) / 112;
 
 using Time = std::chrono::high_resolution_clock;
 
-Game::Game()
-    : _totalEvaluatedPoints(0), _pointsInOval(0), _pointsInBatman(0),
-      _showTexts(false) {
-
-}
-
-int32_t Game::init(const GameCfg &cfg) {
-  int32_t err = EXIT_SUCCESS;
+int32_t Application::init(const ApplicationCfg &cfg) {
   _showTexts = cfg.showTexts;
-  memset(&_inputEvent, 0, sizeof(_inputEvent));
+  memset(&_inputEvent, 0, sizeof (_inputEvent));
 
   if ( EXIT_SUCCESS != initGraphics()) {
     fprintf( stderr, "Error, initGraphics() failed\n");
 
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  if ( EXIT_SUCCESS == err) {
-    generatePoints(MONITOR_WIDTH, MONITOR_HEIGHT, cfg.samplesCount);
-  }
+  generatePoints(MONITOR_WIDTH, MONITOR_HEIGHT, cfg.samplesCount);
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
-void Game::deinit() {
+void Application::deinit() {
   _renderer.deinit();
 }
 
-void Game::start() {
+void Application::start() {
   const double X_RADIUS = MONITOR_WIDTH / 2;
   const double Y_RADIUS = X_RADIUS / 2;
 
@@ -64,63 +57,55 @@ void Game::start() {
   args.ovalRadius = Point(X_RADIUS, Y_RADIUS);
 
   monteCarlo(args);
+
+  waitForExit();
 }
 
-int32_t Game::initGraphics() {
-  int32_t err = EXIT_SUCCESS;
-
+int32_t Application::initGraphics() {
   if ( EXIT_SUCCESS != _renderer.init(0, 0, MONITOR_WIDTH, MONITOR_HEIGHT)) {
     fprintf( stderr, "Error in _renderer.init() \n");
 
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  if ( EXIT_SUCCESS == err) {
-    if ( EXIT_SUCCESS != _pointsFBO.init(&_renderer, Textures::VBO, SDL_Point {
-        0, 0 }, MONITOR_WIDTH, MONITOR_HEIGHT)) {
-      fprintf( stderr, "Error in _pointsVBO.init()\n");
+  if ( EXIT_SUCCESS != _pointsFBO.init(&_renderer, Textures::VBO, SDL_Point { 0,
+      0 }, MONITOR_WIDTH, MONITOR_HEIGHT)) {
+    fprintf( stderr, "Error in _pointsVBO.init()\n");
 
-      err = EXIT_FAILURE;
-    }
+    return EXIT_FAILURE;
   }
 
-  if ( EXIT_SUCCESS == err) {
-    if ( EXIT_SUCCESS
-        != _texts[Textures::TIME].init(_renderer.getTextureContainer(),
-            Textures::TIME, SDL_Point { 20, 20 }, "Time spent: 0 ms",
-            FontSize::SMALL)) {
-      fprintf( stderr, "Error in _texts[Textures::TIME].init()\n");
+  if ( EXIT_SUCCESS
+      != _texts[Textures::TIME].init(_renderer.getTextureContainer(),
+          Textures::TIME, SDL_Point { 20, 20 }, "Time spent: 0 ms",
+          FontSize::SMALL)) {
+    fprintf( stderr, "Error in _texts[Textures::TIME].init()\n");
 
-      err = EXIT_FAILURE;
-    }
+    return EXIT_FAILURE;
   }
 
-  if ( EXIT_SUCCESS == err) {
-    if ( EXIT_SUCCESS
-        != _texts[Textures::ALL_POINTS].init(_renderer.getTextureContainer(),
-            Textures::ALL_POINTS, SDL_Point { 1500, 20 }, "Points: ",
-            FontSize::SMALL)) {
-      fprintf( stderr, "Error in _texts[Textures::TIME].init()\n");
+  if ( EXIT_SUCCESS
+      != _texts[Textures::ALL_POINTS].init(_renderer.getTextureContainer(),
+          Textures::ALL_POINTS, SDL_Point { 1500, 20 }, "Points: ",
+          FontSize::SMALL)) {
+    fprintf( stderr, "Error in _texts[Textures::TIME].init()\n");
 
-      err = EXIT_FAILURE;
-    }
+    return EXIT_FAILURE;
   }
 
-  if ( EXIT_SUCCESS == err) {
-    if ( EXIT_SUCCESS
-        != _texts[Textures::ERROR].init(_renderer.getTextureContainer(),
-            Textures::ERROR, SDL_Point { 20, 1020 }, "Error: 0.0%",
-            FontSize::SMALL)) {
-      fprintf( stderr, "Error in _texts[Textures::TIME].init()\n");
+  if ( EXIT_SUCCESS
+      != _texts[Textures::ERROR].init(_renderer.getTextureContainer(),
+          Textures::ERROR, SDL_Point { 20, 1020 }, "Error: 0.0%",
+          FontSize::SMALL)) {
+    fprintf( stderr, "Error in _texts[Textures::TIME].init()\n");
 
-      err = EXIT_FAILURE;
-    }
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
-void Game::drawWorld(const std::vector<Point> &outSamples) {
+void Application::drawWorld(const std::vector<Point> &outSamples) {
   _renderer.clearScreen();
 
   _pointsFBO.unlockFBO();
@@ -146,8 +131,8 @@ void Game::drawWorld(const std::vector<Point> &outSamples) {
   _renderer.finishFrame();
 }
 
-bool Game::isInBatman(const Point &point, const Point &origin,
-                      const double scale) const {
+bool Application::isInBatman(const Point &point, const Point &origin,
+                             const double scale) const {
   const double POS_X = (point.x - origin.x) / scale;
   const double POS_Y = (point.y - origin.y) / scale;
   double tempX = 0.0;
@@ -239,9 +224,9 @@ bool Game::isInBatman(const Point &point, const Point &origin,
   return false;
 }
 
-void Game::generatePoints(const uint32_t windowWidth,
-                          const uint32_t windowHeight,
-                          const uint32_t maxPoints) {
+void Application::generatePoints(const uint32_t windowWidth,
+                                 const uint32_t windowHeight,
+                                 const uint32_t maxPoints) {
   //reserve enough memory for all points so no unneeded reallocation
   //occur at run-time
   _pointsToEvaluate.reserve(maxPoints);
@@ -263,49 +248,50 @@ void Game::generatePoints(const uint32_t windowWidth,
   }
 }
 
-void Game::monteCarlo(const MonteCarloArgs args) {
+void Application::monteCarlo(const MonteCarloArgs args) {
   std::chrono::high_resolution_clock::time_point start = Time::now();
 
-  const uint32_t SIZE = static_cast<uint32_t>(_pointsToEvaluate.size());
   std::vector<Point> outSamples(DRAW_STEP);
   int32_t currOutSampleIdx = 0;
 
-  for (uint32_t i = 0; i < SIZE; ++i) {
+  for (const auto &point : _pointsToEvaluate) {
     ++_totalEvaluatedPoints;
-
-    if (inOval(_pointsToEvaluate[i], args.animationCenter, args.ovalRadius)) {
-      ++_pointsInOval;
-
-      if (isInBatman(_pointsToEvaluate[i], args.animationCenter,
-          args.animationScale)) {
-        ++_pointsInBatman;
-      } else {
-        //remember only points outside of target
-        outSamples[currOutSampleIdx] = _pointsToEvaluate[i];
-        ++currOutSampleIdx;
-
-        if (currOutSampleIdx >= DRAW_STEP) {
-          if (checkForExitRequest()) {
-            return;
-          }
-
-          updateTexts(args, start);
-          drawWorld(outSamples);
-          currOutSampleIdx = 0;
-        }
-      }
+    if (!inOval(point, args.animationCenter, args.ovalRadius)) {
+      continue;
     }
+
+    ++_pointsInOval;
+
+    if (isInBatman(point, args.animationCenter, args.animationScale)) {
+      ++_pointsInBatman;
+      continue;
+    }
+
+    //remember only points outside of target
+    outSamples[currOutSampleIdx] = point;
+    ++currOutSampleIdx;
+
+    //update the draw target only once every DRAW_STEP
+    if (currOutSampleIdx < DRAW_STEP) {
+      continue;
+    }
+
+    if (checkForExitRequest()) {
+      return;
+    }
+
+    updateTexts(args, start);
+    drawWorld(outSamples);
+    currOutSampleIdx = 0;
   }
 
   //perform the final draw
   updateTexts(args, start);
   drawWorld(outSamples);
-
-  waitForExit();
 }
 
-bool Game::inOval(const Point &point, const Point &origin,
-                  const Point &ovalRadius) const {
+bool Application::inOval(const Point &point, const Point &origin,
+                         const Point &ovalRadius) const {
   const double posX = point.x - origin.x;
   const double posY = point.y - origin.y;
   const double deltaX = posX / ovalRadius.x;
@@ -314,7 +300,7 @@ bool Game::inOval(const Point &point, const Point &origin,
   return ( (deltaX * deltaX) + (deltaY * deltaY) <= 1.0) ? true : false;
 }
 
-void Game::updateTexts(
+void Application::updateTexts(
     const MonteCarloArgs &args,
     const std::chrono::high_resolution_clock::time_point &start) {
   if (!_showTexts) {
@@ -337,36 +323,41 @@ void Game::updateTexts(
   _texts[Textures::ALL_POINTS].setText(content.c_str());
 
   content = "Error: ";
-  content.append(std::to_string(calculateError(args)));
+
+  std::ostringstream ostr;
+  ostr << std::fixed << std::setprecision(3) << calculateError(args);
+
+  content.append(ostr.str());
   content.append("%");
   _texts[Textures::ERROR].setText(content.c_str());
 }
 
-double Game::calculateError(const MonteCarloArgs &args) const {
+double Application::calculateError(const MonteCarloArgs &args) const {
   constexpr double MATH_AREA = 48.4243597;
   static const double REAL_AREA = MATH_AREA * args.animationScale
                                   * args.animationScale;
   static const double OVAL_AREA = ovalArea(args.ovalRadius);
 
   const double AREA_DIFF =
-      fabs(((_pointsInBatman / static_cast<double>(_pointsInOval)) * OVAL_AREA)
-                                                                   - REAL_AREA);
+      fabs( ( (_pointsInBatman / static_cast<double>(
+                  _pointsInOval)) * OVAL_AREA) - REAL_AREA);
+
   /* *100 to get the error in percents */
-  return ((AREA_DIFF / REAL_AREA) * 100.0);
+  return ( (AREA_DIFF / REAL_AREA) * 100.0);
 }
 
-bool Game::checkForExitRequest() {
-  while(0 != SDL_PollEvent(&_inputEvent)) {
-    if ((SDL_KEYDOWN == _inputEvent.type &&
-        SDLK_ESCAPE == _inputEvent.key.keysym.sym) ||
-        SDL_QUIT == _inputEvent.type) {
+bool Application::checkForExitRequest() {
+  while (0 != SDL_PollEvent(&_inputEvent)) {
+    if ( (SDL_KEYDOWN == _inputEvent.type
+        && SDLK_ESCAPE == _inputEvent.key.keysym.sym)
+        || SDL_QUIT == _inputEvent.type) {
       return true;
     }
   }
   return false;
 }
 
-void Game::waitForExit() {
+void Application::waitForExit() {
   using namespace std::literals;
 
   while (true) {

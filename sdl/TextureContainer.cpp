@@ -7,10 +7,10 @@
 #include <cstdlib>
 
 //Other libraries headers
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_video.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL_render.h>
+#include <SDL_video.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 
 //Own components headers
 #include "common/CommonDefines.h"
@@ -28,8 +28,6 @@ TextureContainer::TextureContainer() {
 }
 
 int32_t TextureContainer::init(SDL_Renderer *renderer) {
-  int32_t err = EXIT_SUCCESS;
-
   _renderer = renderer;
 
   _textures.resize(Textures::COUNT, nullptr);
@@ -39,10 +37,10 @@ int32_t TextureContainer::init(SDL_Renderer *renderer) {
   if (EXIT_SUCCESS != loadTextures()) {
     fprintf(stderr, "Error in loadTextures()\n");
 
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void TextureContainer::deinit() {

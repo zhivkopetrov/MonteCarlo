@@ -16,9 +16,6 @@ class Renderer;
 
 class FBO {
 public:
-  FBO();
-  ~FBO() = default;
-
   int32_t init(Renderer *renderer, const uint8_t rsrcId,
                const SDL_Point startPoint, const int32_t FBOWidth,
                const int32_t FBOHeight);
@@ -30,7 +27,7 @@ public:
   void lockFBO();
 
 private:
-  Renderer *_renderer;
+  Renderer *_renderer = nullptr;
 };
 
 #endif /* SDL_FBO_H_ */
