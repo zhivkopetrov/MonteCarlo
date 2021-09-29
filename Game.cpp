@@ -2,15 +2,14 @@
 #include "Game.h"
 
 //C system headers
-#include <unistd.h>
 
 //C++ system headers
 #include <cstdlib>
 #include <cstdio>
 #include <random>
+#include <thread>
 
 //Other libraries headers
-
 
 //Own components headers
 
@@ -368,11 +367,14 @@ bool Game::checkForExitRequest() {
 }
 
 void Game::waitForExit() {
+  using namespace std::literals;
+
   while (true) {
     if (checkForExitRequest()) {
       break;
     }
-    usleep(20000); //sleep 20ms
+
+    std::this_thread::sleep_for(20ms);
   }
 }
 
