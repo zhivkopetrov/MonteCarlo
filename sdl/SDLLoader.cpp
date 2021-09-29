@@ -11,7 +11,6 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_mixer.h>
 
 //Own components headers
 
@@ -54,24 +53,6 @@ int32_t SDLLoader::init() {
     }
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (0 > SDL_Init(SDL_INIT_AUDIO)) {
-      fprintf(stderr, "SDL Audio could not be initialised! "
-          "SDL Error: %s\n", SDL_GetError());
-    } else {
-      if (0 > Mix_OpenAudio(44100,              //sound frequency
-              MIX_DEFAULT_FORMAT, //sample format
-              2,                  //stereo hardware channels
-              2048))              //chunk size
-              {
-        fprintf(stderr, "SDL_mixer could not initialised! "
-            "SDL_mixer Error: %s\n", Mix_GetError());
-
-        err = EXIT_FAILURE;
-      }
-    }
-  }
-
   return err;
 }
 
@@ -79,7 +60,6 @@ void SDLLoader::deinit() {
   //Quit SDL subsystems
   IMG_Quit();
   TTF_Quit();
-  Mix_Quit();
   SDL_Quit();
 }
 
