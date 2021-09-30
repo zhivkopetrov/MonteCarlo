@@ -57,8 +57,6 @@ void Application::start() {
   args.ovalRadius = Point(X_RADIUS, Y_RADIUS);
 
   monteCarlo(args);
-
-  waitForExit();
 }
 
 int32_t Application::initGraphics() {
@@ -288,6 +286,7 @@ void Application::monteCarlo(const MonteCarloArgs args) {
   //perform the final draw
   updateTexts(args, start);
   drawWorld(outSamples);
+  waitForExit();
 }
 
 bool Application::inOval(const Point &point, const Point &origin,
