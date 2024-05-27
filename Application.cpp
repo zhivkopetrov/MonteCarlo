@@ -21,9 +21,9 @@ constexpr int32_t MONITOR_HEIGHT = 1080;
 
 constexpr int32_t DRAW_STEP = 100;
 
-constexpr double HASH_1 = (6 * sqrt(10)) / 7;
-constexpr double HASH_2 = HASH_1 / 2;
-constexpr double HASH_3 = ( (3 * sqrt(33)) - 7) / 112;
+const double HASH_1 = (6 * sqrt(10)) / 7;
+const double HASH_2 = HASH_1 / 2;
+const double HASH_3 = ( (3 * sqrt(33)) - 7) / 112;
 }
 
 using Time = std::chrono::high_resolution_clock;

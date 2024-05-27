@@ -54,3 +54,11 @@ target_link_libraries(
             ${SDL2_TTF_LIBRARY}   # -lSDL2_ttf flag
             m                     # -libm flag
 )
+
+if(CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    target_link_libraries(
+        ${PROJECT_NAME}
+            PRIVATE
+                stdc++            # -libstdc++ flag
+    )
+endif()
